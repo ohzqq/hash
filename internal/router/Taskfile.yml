@@ -6,13 +6,9 @@ tasks:
   build:
     desc: "build wasm bin"
     cmds:
-      - GOOS=js GOARCH=wasm go build -o web/gottie/gottie-anim.wasm .  
+      - GOOS=js GOARCH=wasm go build -o web/test.wasm .  
   run:
     desc: build and run player web component
     deps: [build]
     cmds:
       - python -m http.server -d web/
-  tinygo:
-    desc: "build wasm bin"
-    cmds:
-      - GOOS=js GOARCH=wasm tinygo build -o web/gottie/app.wasm .  
