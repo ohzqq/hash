@@ -29,5 +29,8 @@ func (u *URL) Query() query.Values {
 }
 
 func (u *URL) String() string {
+	if u.RawQuery == "" {
+		return u.Path
+	}
 	return u.Path + `?` + u.RawQuery
 }

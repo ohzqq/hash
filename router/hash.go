@@ -16,11 +16,11 @@ func OnHashChange(router *mux.ServeMux) {
 }
 
 func GetHash() string {
-	return Location.Get("hash").String()
+	return Location().Get("hash").String()
 }
 
 func SetHash(hash string) {
-	return Location.Set("hash", hash)
+	Location().Set("hash", hash)
 }
 
 func Location() *tinydom.Location {
