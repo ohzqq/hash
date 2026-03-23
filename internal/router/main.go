@@ -3,8 +3,8 @@ package main
 import (
 	"syscall/js"
 
+	"github.com/ohzqq/hash"
 	"github.com/ohzqq/hash/mux"
-	"github.com/ohzqq/hash/router"
 )
 
 var data = [][]string{
@@ -28,6 +28,6 @@ func main() {
 		}
 		rmux.Handle(sourceRule, h)
 	}
-	router.OnHashChange(rmux)
+	hash.OnHashChange(rmux)
 	select {}
 }
