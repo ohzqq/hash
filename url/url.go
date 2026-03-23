@@ -12,11 +12,15 @@ type URL struct {
 }
 
 func Parse(uri string) *URL {
-	p, q := strings.Split(uri, "?")
-	return &URL{
-		Path:     p,
-		RawQuery: q,
+	parts := strings.Split(uri, "?")
+	u := &URL{}
+	if len(parts) > 0 {
+		u.Path = parts[0]
 	}
+	if len(parts) > 1 {
+		u.RawQuery = parts[1]
+	}
+	return u
 }
 
 func (u *URL) Query() query.Values {

@@ -27,11 +27,11 @@ func (mux *ServeMux) Handle(rule string, cb Handler) {
 }
 
 func (mux *ServeMux) NewRequest(uri string) (*Request, error) {
-	ok, rule, vars := mux.Query(uri)
-	if !ok {
-		return nil, errors.New("error parsing request url")
-	}
 	req := NewRequest(uri)
+	ok, rule, vars := mux.tree.Query(req.Path)
+	if !ok {
+		return nil, errors.New("error parsing request url " + uri + " rule " + rule)
+	}
 	req.rule = rule
 	req.PathVars = vars
 	return req, nil
@@ -39,6 +39,9 @@ func (mux *ServeMux) NewRequest(uri string) (*Request, error) {
 
 func (mux *ServeMux) Serve(uri string) error {
 	req, err := mux.NewRequest(uri)
+	if err != nil {
+		return err
+	}
 	if h, ok := mux.handlers[req.rule]; ok {
 		return h(req)
 	}
