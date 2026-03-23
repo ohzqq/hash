@@ -23,7 +23,7 @@ func Test_Match(t *testing.T) {
 	for _, v := range data {
 		sourceRule := v[0]
 		h := func(req *Request) error {
-			fmt.Printf("%#v\n", req.URL)
+			fmt.Printf("%#v\n", req.Query())
 			//println(req.URL.String())
 			return nil
 		}
