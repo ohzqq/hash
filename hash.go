@@ -9,16 +9,20 @@ import (
 
 func OnHashChange(router *mux.ServeMux) {
 	h := js.FuncOf(func(this js.Value, args []js.Value) any {
-		return router.Serve(strings.TrimPrefix(GetHash(), "#"))
+		err := router.Serve(strings.TrimPrefix(Get(), "#"))
+		if err != nil {
+			return "error"
+		}
+		return nil
 	})
 	js.Global().Get("window").Call("addEventListener", "hashchange", h)
 }
 
-func GetHash() string {
+func Get() string {
 	return Location().Get("hash").String()
 }
 
-func SetHash(hash string) {
+func Set(hash string) {
 	Location().Set("hash", hash)
 }
 

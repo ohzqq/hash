@@ -23,7 +23,7 @@ func main() {
 	for _, v := range data {
 		sourceRule := v[0]
 		h := func(req *mux.Request) error {
-			js.Global().Get("console").Call("log", req.URL.String())
+			js.Global().Get("console").Call("log", "hashchange", req.URL.String())
 			return nil
 		}
 		rmux.Handle(sourceRule, h)
