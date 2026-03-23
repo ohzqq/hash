@@ -59,3 +59,17 @@ func NewRequest(uri string) *Request {
 		URL: url.Parse(uri),
 	}
 }
+
+func (req *Request) QueryValue(k string) string {
+	return req.Query().Get(k)
+}
+
+func (req *Request) PathValue(k string) string {
+	if len(req.PathVars) < 1 {
+		return ""
+	}
+	if val, ok := req.PathVars[k]; ok {
+		return val
+	}
+	return ""
+}
