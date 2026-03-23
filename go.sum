@@ -6,3 +6,5 @@ github.com/ohzqq/query v0.0.0 h1:/SwLazjhzY5eELzTA7bCkDAXr3zz4svBmlCS8qYDqPA=
 github.com/ohzqq/query v0.0.0/go.mod h1:eI8kSpWv0YO6gDEVk/EX6FfI7UEFxrcOb+l06c/1Zog=
 github.com/ohzqq/sp v0.0.2 h1:PCj6FL8cIABkaNbKJF3bcWkC2oHro3vIp5m9BMxfnF8=
 github.com/ohzqq/sp v0.0.2/go.mod h1:nnrNfnrbtKsO21+LX+e6plJJVKvVJ4hdfd+eSHFP+60=
+github.com/ohzqq/tinydom v0.0.7 h1:H1EOU4ZFTFdEmnioraPjfrCzZHY3RD/ehN6XcEjnh20=
+github.com/ohzqq/tinydom v0.0.7/go.mod h1:m2iwr08qzbV2KjHU/TLLJqDRrg03wN6jS0lT6tLS7QM=

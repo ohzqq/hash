@@ -7,4 +7,5 @@ require (
 	github.com/ohzqq/qs v0.0.0 // indirect
 	github.com/ohzqq/query v0.0.0 // indirect
 	github.com/ohzqq/sp v0.0.2 // indirect
+	github.com/ohzqq/tinydom v0.0.7 // indirect
 )
