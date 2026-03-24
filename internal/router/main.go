@@ -8,14 +8,14 @@ import (
 )
 
 var data = [][]string{
-	{"/pet/findByStatus", "/pet/findByStatus?param1=toot&param2=poot&param1=root"},
-	{"/pet/{petId}", "/pet/113?param1=toot&param2=poot&param1=root"},
-	{"/pet/{petId}/info", "/pet/12121/info?param1=toot&param2=poot&param1=root"},
-	{"/store/inventory", "/store/inventory?param1=toot&param2=poot&param1=root"},
-	{"/store/order/{orderId}", "/store/order/939?param1=toot&param2=poot&param1=root"},
-	{"/user/{username}", "/user/1002"},
-	{"/user/login", "/user/login?param1=toot&param2=poot&param1=root"},
-	{"/user/logout", "/user/logout"},
+	{"#/pet/findByStatus", "/pet/findByStatus?param1=toot&param2=poot&param1=root"},
+	{"#/pet/{petId}", "/pet/113?param1=toot&param2=poot&param1=root"},
+	{"#/pet/{petId}/info", "/pet/12121/info?param1=toot&param2=poot&param1=root"},
+	{"#/store/inventory", "/store/inventory?param1=toot&param2=poot&param1=root"},
+	{"#/store/order/{orderId}", "/store/order/939?param1=toot&param2=poot&param1=root"},
+	{"#/user/{username}", "/user/1002"},
+	{"#/user/login", "/user/login?param1=toot&param2=poot&param1=root"},
+	{"#/user/logout", "/user/logout"},
 }
 
 func main() {
@@ -24,6 +24,7 @@ func main() {
 		sourceRule := v[0]
 		h := func(req *mux.Request) error {
 			js.Global().Get("console").Call("log", "hashchange", req.URL.String())
+			js.Global().Get("console").Call("log", "rule", req.Rule)
 			return nil
 		}
 		rmux.Handle(sourceRule, h)

@@ -32,7 +32,7 @@ func (mux *ServeMux) NewRequest(uri string) (*Request, error) {
 	if !ok {
 		return nil, errors.New("error parsing request url " + uri + " rule " + rule)
 	}
-	req.rule = rule
+	req.Rule = rule
 	req.PathVars = vars
 	return req, nil
 }
@@ -42,7 +42,7 @@ func (mux *ServeMux) Serve(uri string) error {
 	if err != nil {
 		return err
 	}
-	if h, ok := mux.handlers[req.rule]; ok {
+	if h, ok := mux.handlers[req.Rule]; ok {
 		return h(req)
 	}
 	return errors.New("serve error")
@@ -50,7 +50,7 @@ func (mux *ServeMux) Serve(uri string) error {
 
 type Request struct {
 	*url.URL
-	rule     string
+	Rule     string
 	PathVars map[string]string
 }
 

@@ -1,7 +1,6 @@
 package hash
 
 import (
-	"strings"
 	"syscall/js"
 
 	"github.com/ohzqq/hash/mux"
@@ -9,7 +8,7 @@ import (
 
 func OnHashChange(router *mux.ServeMux) {
 	h := js.FuncOf(func(this js.Value, args []js.Value) any {
-		err := router.Serve(strings.TrimPrefix(Get(), "#"))
+		err := router.Serve(Get())
 		if err != nil {
 			return "error"
 		}
