@@ -5,6 +5,7 @@ import (
 
 	"github.com/ohzqq/hash"
 	"github.com/ohzqq/hash/mux"
+	"github.com/ohzqq/tinydom"
 )
 
 var data = [][]string{
@@ -24,7 +25,8 @@ func main() {
 		sourceRule := v[0]
 		h := func(req *mux.Request) error {
 			js.Global().Get("console").Call("log", "hashchange", req.URL.String())
-			js.Global().Get("console").Call("log", "rule", req.Rule)
+			div := tinydom.GetDocument().GetElementById("test")
+			div.SetTextContent(req.Rule)
 			return nil
 		}
 		rmux.Handle(sourceRule, h)
