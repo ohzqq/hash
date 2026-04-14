@@ -67,13 +67,11 @@ func (r *Router) WrapHashEvent(e js.Value) (*mux.Request, error) {
 func DefaultHashChangeHandler(r *Router) js.Func {
 	return js.FuncOf(func(this js.Value, args []js.Value) any {
 		defer jserr.Recover()
-		//jserr.Log(args[0])
 		if args[0].Truthy() {
 			req, err := r.WrapHashEvent(args[0])
 			if err != nil {
 				return jserr.Wrap(err).Value
 			}
-			jserr.Log("new", req.String(), "old", req.OldURL.String())
 			err = r.ServeMux.HandleRequest(req)
 			if err != nil {
 				return jserr.Wrap(err).Value
