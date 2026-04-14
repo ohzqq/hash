@@ -20,17 +20,22 @@ var data = [][]string{
 }
 
 func main() {
-	rmux := mux.NewServeMux()
+	rmux := hash.NewRouter()
 	for _, v := range data {
 		sourceRule := v[0]
-		h := func(req *mux.Request) error {
-			js.Global().Get("console").Call("log", "hashchange", req.URL.String())
-			div := tinydom.GetDocument().GetElementById("test")
-			div.SetTextContent(req.Rule)
-			return nil
-		}
-		rmux.Handle(sourceRule, h)
+		rmux.AddRoute(sourceRule, wrapHandler())
 	}
-	hash.OnHashChange(rmux)
+	rmux.OnLoad(wrapHandler())
+	rmux.Serve()
+	//hash.OnHashChange(rmux)
 	select {}
+}
+
+func wrapHandler() mux.Handler {
+	return func(req *mux.Request) error {
+		js.Global().Get("console").Call("log", "hashchange", req.URL.String())
+		div := tinydom.GetDocument().GetElementById("test")
+		div.SetTextContent(req.Rule)
+		return nil
+	}
 }
