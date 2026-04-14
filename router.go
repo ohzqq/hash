@@ -82,16 +82,3 @@ func DefaultHashChangeHandler(r *Router) js.Func {
 		return nil
 	})
 }
-
-type URL struct {
-	js.Value
-}
-
-func ParseURL(u string) (*tinydom.URL, bool) {
-	return tinydom.ParseURL(u, "http://example.com")
-	//return &URL{Value: js.Global().Get("URL").Call("parse", u, "http://example.com")}
-}
-
-func (u *URL) Hash() string {
-	return u.Get("hash").String()
-}
