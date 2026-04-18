@@ -10,15 +10,14 @@ import (
 
 type Router struct {
 	*mux.ServeMux
-	HashChangeHandler func(r *Router) js.Func
-	onLoad            mux.Handler
+	onLoad   mux.Handler
+	onChange func(e *Event) error
 }
 
 func NewRouter() *Router {
 	defer jserr.Recover()
 	r := &Router{
-		ServeMux:          mux.NewServeMux(),
-		HashChangeHandler: DefaultHashChangeHandler,
+		ServeMux: mux.NewServeMux(),
 	}
 	return r
 }
@@ -33,9 +32,8 @@ func (r *Router) OnLoad(h mux.Handler) *Router {
 	return r
 }
 
-func (r *Router) SetHashChangeHandler(h func(r *Router) js.Func) *Router {
-	r.HashChangeHandler = h
-	return r
+func (r *Router) OnChange(h func(e *Event) error) {
+	r.onChange = h
 }
 
 func (r *Router) ParseURL(uri string) (*mux.Request, error) {
@@ -44,39 +42,67 @@ func (r *Router) ParseURL(uri string) (*mux.Request, error) {
 
 func (r *Router) Serve() {
 	if r.onLoad != nil {
-		hash := js.Global().Get("window").Get("location").Get("hash").String()
-		req, err := r.ServeMux.NewRequest(hash)
+		req, err := r.ServeMux.NewRequest(Get())
 		if err != nil {
 			jserr.Log(err.Error())
 		}
 		r.onLoad(req)
 	}
-	js.Global().Get("window").Call("addEventListener", "hashchange", r.HashChangeHandler(r))
+	js.Global().Get("window").Call("addEventListener", "hashchange", r.serveHandlerFunc())
 }
 
-func (r *Router) WrapHashEvent(e js.Value) (*mux.Request, error) {
-	n, _ := tinydom.ParseURL(e.Get("newURL").String())
-	o, _ := tinydom.ParseURL(e.Get("oldURL").String())
-	req, err := r.ServeMux.NewRequest(n.Hash(), o.Hash())
-	if err != nil {
-		return nil, err
+func (r *Router) serveHandlerFunc() js.Func {
+	if r.onChange != nil {
+		return js.FuncOf(r.hashChangeFunc)
 	}
-	return req, nil
+	return js.FuncOf(r.routerHandlerFunc)
 }
 
-func DefaultHashChangeHandler(r *Router) js.Func {
-	return js.FuncOf(func(this js.Value, args []js.Value) any {
-		defer jserr.Recover()
-		if args[0].Truthy() {
-			req, err := r.WrapHashEvent(args[0])
-			if err != nil {
-				return jserr.Wrap(err).Value
-			}
-			err = r.ServeMux.HandleRequest(req)
-			if err != nil {
-				return jserr.Wrap(err).Value
-			}
-		}
-		return nil
-	})
+func (r *Router) hashChangeFunc(this js.Value, args []js.Value) any {
+	defer jserr.Recover()
+	e := NewHashEvent(args[0])
+	err := r.onChange(e)
+	if err != nil {
+		return jserr.Wrap(err).Value
+	}
+	return nil
+}
+
+func (r *Router) routerHandlerFunc(this js.Value, args []js.Value) any {
+	defer jserr.Recover()
+	if !args[0].Truthy() {
+		return jserr.New("no args").Value
+	}
+	e := NewHashEvent(args[0])
+	err := r.ServeMux.Serve(e.NewURL().Hash(), e.OldURL().Hash())
+	if err != nil {
+		return jserr.Wrap(err).Value
+	}
+	return nil
+}
+
+type Event struct {
+	*tinydom.Event
+}
+
+func NewHashEvent(v js.Value) *Event {
+	return &Event{tinydom.WrapEvent(v)}
+}
+
+func (h *Event) NewURL() *tinydom.URL {
+	u := Get()
+	if n := h.Get("newURL"); !n.Truthy() {
+		u = n.String()
+	}
+	uri, _ := tinydom.ParseURL(u)
+	return uri
+}
+
+func (h *Event) OldURL() *tinydom.URL {
+	u := Get()
+	if n := h.Get("oldURL"); !n.Truthy() {
+		u = n.String()
+	}
+	uri, _ := tinydom.ParseURL(u)
+	return uri
 }

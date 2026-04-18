@@ -11,4 +11,9 @@ require (
 	github.com/ohzqq/tinydom v0.0.73-0.20260414164704-49a3894c0be7 // indirect
 	github.com/tinywasm/fmt v0.21.1 // indirect
 	github.com/tinywasm/jsvalue v0.0.10 // indirect
+	github.com/yuin/goldmark v1.7.13 // indirect
+	golang.org/x/mod v0.27.0 // indirect
+	golang.org/x/tools v0.36.1-0.20250903222949-a5c0eb837c9f // indirect
+	golang.org/x/tools/cmd/godoc v0.1.0-deprecated // indirect
+	golang.org/x/tools/godoc v0.1.0-deprecated // indirect
 )

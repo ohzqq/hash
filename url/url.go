@@ -8,6 +8,7 @@ import (
 
 type URL struct {
 	Path     string
+	Fragment string
 	RawQuery string
 }
 
