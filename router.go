@@ -9,7 +9,8 @@ import (
 
 type Router struct {
 	*mux.ServeMux
-	onLoad mux.Handler
+	onLoad   Handler
+	onChange Handler
 }
 
 func NewRouter() *Router {
@@ -25,7 +26,7 @@ func (r *Router) AddRoute(rule string, h mux.Handler) *Router {
 	return r
 }
 
-func (r *Router) OnLoad(h mux.Handler) *Router {
+func (r *Router) OnLoad(h Handler) *Router {
 	r.onLoad = h
 	return r
 }
@@ -36,11 +37,7 @@ func (r *Router) ParseURL(uri string) (*mux.Request, error) {
 
 func (r *Router) Serve() {
 	if r.onLoad != nil {
-		req, err := r.ServeMux.NewRequest(Get())
-		if err != nil {
-			jserr.Log(err.Error())
-		}
-		r.onLoad(req)
+		r.onLoad(newEvent())
 	}
 	js.Global().Get("window").Call("addEventListener", "hashchange", js.FuncOf(r.routerHandlerFunc))
 }
@@ -51,7 +48,14 @@ func (r *Router) routerHandlerFunc(this js.Value, args []js.Value) any {
 		return jserr.New("no args").Value
 	}
 	e := NewHashEvent(args[0])
-	err := r.ServeMux.Serve(e.NewURL().Hash(), e.OldURL().Hash())
+	req, err := r.ServeMux.NewRequest(e.NewURL().Hash(), e.OldURL().Hash())
+	if err != nil {
+		return jserr.Wrap(err).Value
+	}
+	if req.Path == req.OldURL.Path {
+		return nil
+	}
+	err = r.ServeMux.HandleRequest(req)
 	if err != nil {
 		return jserr.Wrap(err).Value
 	}

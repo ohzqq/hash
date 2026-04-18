@@ -29,7 +29,7 @@ func main() {
 
 	hash.OnChange(onChange)
 
-	rmux.OnLoad(wrapHandler())
+	rmux.OnLoad(onChange)
 	rmux.Serve()
 	select {}
 }
@@ -43,7 +43,7 @@ func onChange(e *hash.Event) error {
 
 func wrapHandler() mux.Handler {
 	return func(req *mux.Request) error {
-		js.Global().Get("console").Call("log", "hashchange", req.URL.String())
+		js.Global().Get("console").Call("log", "router", req.URL.String())
 		div := tinydom.GetDocument().GetElementById("test")
 		div.SetTextContent(req.Rule)
 		return nil
