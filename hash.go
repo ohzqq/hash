@@ -3,20 +3,16 @@ package hash
 import (
 	"syscall/js"
 
-	"github.com/ohzqq/hash/mux"
 	"github.com/ohzqq/jserr"
 )
 
-func OnHashChange(router *mux.ServeMux) {
+func OnHashChange(onChange func(e *Event) error) {
 	defer jserr.Recover()
 	h := js.FuncOf(func(this js.Value, args []js.Value) any {
 		defer jserr.Recover()
-		jserr.Log(args[0])
-		if args[0].Truthy() {
-			err := router.Serve(Get())
-			if err != nil {
-				return jserr.Wrap(err).Value
-			}
+		err := onChange(NewHashEvent(args[0]))
+		if err != nil {
+			return jserr.Wrap(err).Value
 		}
 		return nil
 	})

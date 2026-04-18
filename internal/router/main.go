@@ -20,16 +20,18 @@ var data = [][]string{
 }
 
 func main() {
-	rmux := hash.NewRouter()
+	//rmux := hash.NewRouter()
 	//rmux.AddRoute(data[0][0], wrapHandler())
-	for _, v := range data {
-		sourceRule := v[0]
-		rmux.AddRoute(sourceRule, wrapHandler())
-	}
+	//for _, v := range data {
+	//sourceRule := v[0]
+	//rmux.AddRoute(sourceRule, wrapHandler())
+	//}
 
-	rmux.OnLoad(wrapHandler())
-	rmux.OnChange(onChange)
-	rmux.Serve()
+	hash.OnHashChange(onChange)
+
+	//rmux.OnLoad(wrapHandler())
+	//rmux.OnChange(onChange)
+	//rmux.Serve()
 	//hash.OnHashChange(rmux)
 	select {}
 }
