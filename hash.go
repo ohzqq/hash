@@ -4,9 +4,10 @@ import (
 	"syscall/js"
 
 	"github.com/ohzqq/jserr"
+	"github.com/ohzqq/tinydom"
 )
 
-func OnHashChange(onChange func(e *Event) error) {
+func OnChange(onChange func(e *Event) error) {
 	defer jserr.Recover()
 	h := js.FuncOf(func(this js.Value, args []js.Value) any {
 		defer jserr.Recover()
@@ -29,4 +30,30 @@ func Set(hash string) {
 
 func Location() js.Value {
 	return js.Global().Get("window").Get("location")
+}
+
+type Event struct {
+	*tinydom.Event
+}
+
+func NewHashEvent(v js.Value) *Event {
+	return &Event{tinydom.WrapEvent(v)}
+}
+
+func (h *Event) NewURL() *tinydom.URL {
+	u := Get()
+	if n := h.Get("newURL"); !n.Truthy() {
+		u = n.String()
+	}
+	uri, _ := tinydom.ParseURL(u)
+	return uri
+}
+
+func (h *Event) OldURL() *tinydom.URL {
+	u := Get()
+	if n := h.Get("oldURL"); !n.Truthy() {
+		u = n.String()
+	}
+	uri, _ := tinydom.ParseURL(u)
+	return uri
 }
