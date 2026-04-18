@@ -21,13 +21,13 @@ var data = [][]string{
 
 func main() {
 	rmux := hash.NewRouter()
-	rmux.AddRoute(data[0][0], wrapHandler())
-	for _, v := range data {
-		sourceRule := v[0]
-		rmux.AddRoute(sourceRule, wrapHandler())
-	}
+	//rmux.AddRoute(data[0][0], wrapHandler())
+	//for _, v := range data {
+	//  sourceRule := v[0]
+	//  rmux.AddRoute(sourceRule, wrapHandler())
+	//}
 
-	hash.OnChange(onChange)
+	rmux.OnChange(onChange)
 
 	rmux.OnLoad(onChange)
 	rmux.Serve()

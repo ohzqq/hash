@@ -8,22 +8,22 @@ import (
 )
 
 type ServeMux struct {
-	tree     *pretree.PreTree
-	handlers map[string]Handler
+	Tree     *pretree.PreTree
+	Handlers map[string]Handler
 }
 
 type Handler func(req *Request) error
 
 func NewServeMux() *ServeMux {
 	return &ServeMux{
-		tree:     pretree.New(),
-		handlers: make(map[string]Handler),
+		Tree:     pretree.New(),
+		Handlers: make(map[string]Handler),
 	}
 }
 
 func (mux *ServeMux) Handle(rule string, cb Handler) {
-	mux.tree.GET(rule)
-	mux.handlers[rule] = cb
+	mux.Tree.GET(rule)
+	mux.Handlers[rule] = cb
 }
 
 func (mux *ServeMux) NewRequest(uri ...string) (*Request, error) {
@@ -39,7 +39,7 @@ func (mux *ServeMux) NewRequest(uri ...string) (*Request, error) {
 			req.SetOldURL(u)
 		}
 	}
-	ok, rule, vars := mux.tree.Query(req.Path)
+	ok, rule, vars := mux.Tree.Query(req.Path)
 	if !ok {
 		return nil, errors.New("error parsing request url " + uri[0] + " rule " + rule)
 	}
@@ -49,7 +49,7 @@ func (mux *ServeMux) NewRequest(uri ...string) (*Request, error) {
 }
 
 func (mux *ServeMux) HandleRequest(req *Request) error {
-	if h, ok := mux.handlers[req.Rule]; ok {
+	if h, ok := mux.Handlers[req.Rule]; ok {
 		return h(req)
 	}
 	return errors.New("serve error")

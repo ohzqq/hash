@@ -31,6 +31,11 @@ func (r *Router) OnLoad(h Handler) *Router {
 	return r
 }
 
+func (r *Router) OnChange(h Handler) *Router {
+	r.onChange = h
+	return r
+}
+
 func (r *Router) ParseURL(uri string) (*mux.Request, error) {
 	return r.NewRequest(uri)
 }
@@ -39,7 +44,12 @@ func (r *Router) Serve() {
 	if r.onLoad != nil {
 		r.onLoad(newEvent())
 	}
-	js.Global().Get("window").Call("addEventListener", "hashchange", js.FuncOf(r.routerHandlerFunc))
+	if r.onChange != nil {
+		OnChange(r.onChange)
+	}
+	if len(r.ServeMux.Handlers) > 0 {
+		js.Global().Get("window").Call("addEventListener", "hashchange", js.FuncOf(r.routerHandlerFunc))
+	}
 }
 
 func (r *Router) routerHandlerFunc(this js.Value, args []js.Value) any {
